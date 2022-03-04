@@ -13,24 +13,28 @@ impl RoyalBank {
         }
     }
 
-    pub fn getGoldOutput(&self, gold_output: f64) {
+    pub fn getGoldOutput(&mut self, gold_output: f64) {
         self.gold_reserve += gold_output;
     }
 
-    pub fn returnGold(&self, gold_mess: f64) {
+    pub fn returnGold(&mut self, gold_mess: f64) {
         self.gold_reserve += gold_mess;
     }
 
-    pub fn returnR(&self, R_reserves: f64) {
+    pub fn returnR(&mut self, R_reserves: f64) {
         self.currency_R_reserves += R_reserves;
     }
 
-    pub fn putGold(&self, gold_mess: f64) {
+    pub fn putGold(&mut self, gold_mess: f64) {
         self.gold_reserve -= gold_mess;
     }
 
-    pub fn putR(&self, R_reserves: f64) {
+    pub fn putR(&mut self, R_reserves: f64) {
         self.currency_R_reserves -= R_reserves;
+    }
+
+    pub fn checkGold(&self) -> f64 {
+        return self.gold_reserve;
     }
 
     // pub fn strategicJudgment(&self) -> behavior {
