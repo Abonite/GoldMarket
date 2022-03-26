@@ -83,10 +83,10 @@ fn main() {
         Err(e) => panic!("{}", e)
     };
 
-    let mut RB = RoyalBank::new(1.0, 2.0);
+    let mut RB = RoyalBank::new(10.0, 2.0);
+    let mut MD = MiningDepartment::new(7.6232328767123287671232876712329);
     for i in 0..10 {
-        let MD = MiningDepartment::new(1.0);
-        RB.getGoldOutput(MD.goldOutput());
-        println!("current royal bank gold: {}", RB.checkGold());
+        RB.getGoldOutput(MD.gold_output());
+        println!("Todays gold production: {} tons; current royal bank gold: {}.\n", MD.daily_gold_production, RB.checkGold());
     }
 }
