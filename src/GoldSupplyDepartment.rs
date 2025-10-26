@@ -1,43 +1,44 @@
+use std::result::Result;
+
+// sk-b9c7388a03c34f7c9c90fb84dfb1bc5b
 pub struct RoyalBank {
-    gold_reserve: f64,
-    currency_R_reserves: f64
+    gold_reserve: u128,
+    currency_R_reserves: u128
 }
 
 impl RoyalBank {
     /// # RoyalBank
     /// Royal bank means the
-    pub fn new(init_gold_reserve: f64, init_currency_R_reserves: f64) -> RoyalBank {
+    pub fn new(init_gold_reserve: u64, init_currency_R_reserves: u64) -> RoyalBank {
         RoyalBank {
-            gold_reserve: init_gold_reserve,
-            currency_R_reserves: init_currency_R_reserves
+            gold_reserve: init_gold_reserve as u128,
+            currency_R_reserves: init_currency_R_reserves as u128
         }
     }
 
-    pub fn getGoldOutput(&mut self, gold_output: f64) {
-        self.gold_reserve += gold_output;
+    pub fn storageGold(&mut self, gold_mess: u64) {
+        self.gold_reserve += gold_mess as u128;
     }
 
-    pub fn returnGold(&mut self, gold_mess: f64) {
-        self.gold_reserve += gold_mess;
+    pub fn getGold(&mut self, gold_mess: u64) -> Result<(), &'static str> {
+        if gold_mess as u128 > self.gold_reserve {
+            Err("Royal bank gold reserve is not enough!")
+        } else {
+            self.gold_reserve -= gold_mess as u128;
+            Ok(())
+        }
     }
 
-    pub fn returnR(&mut self, R_reserves: f64) {
-        self.currency_R_reserves += R_reserves;
+    pub fn storageR(&mut self, R_value: u64) {
+        self.currency_R_reserves += R_value as u128;
     }
 
-    pub fn putGold(&mut self, gold_mess: f64) {
-        self.gold_reserve -= gold_mess;
+    pub fn getR(&mut self, R_value: u64) -> Result<(), &'static str> {
+        if R_value as u128 > self.currency_R_reserves {
+            Err("Royal bank currency R reserves is not enough!")
+        } else {
+            self.currency_R_reserves -= R_value as u128;
+            Ok(())
+        }
     }
-
-    pub fn putR(&mut self, R_reserves: f64) {
-        self.currency_R_reserves -= R_reserves;
-    }
-
-    pub fn checkGold(&self) -> f64 {
-        return self.gold_reserve;
-    }
-
-    // pub fn strategicJudgment(&self) -> behavior {
-    //     behavior::buy
-    // }
 }

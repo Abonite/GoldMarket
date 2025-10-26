@@ -1,12 +1,12 @@
 mod TransactionBehavior;
 use TransactionBehavior::behavior;
 
-pub struct ForeignTrader {
+pub struct ForeignInstitutionTrader {
     hold_gold_weight: f64,
     the_amount_of_currency_R_held: f64
 }
 
-impl ForeignTrader {
+impl ForeignInstitutionTrader {
     pub fn new(init_gold_holdings: f64, init_R_holdings: f64) -> ForeignTrader {
         ForeignTrader {
             hold_gold_weight: init_gold_holdings,
