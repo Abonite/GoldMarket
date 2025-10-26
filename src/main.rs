@@ -1,6 +1,8 @@
 mod GoldMarket;
 mod GoldProductionDepartment;
 mod GoldSupplyDepartment;
+mod Trader;
+mod TransactionBehavior;
 
 use anyhow::Result;
 use deepseek_api::response::FinishReason;
@@ -12,13 +14,18 @@ use deepseek_api::{DeepSeekClientBuilder, CompletionsRequestBuilder, RequestBuil
 use GoldMarket::Market;
 use GoldProductionDepartment::MiningDepartment;
 use GoldSupplyDepartment::RoyalBank;
+use Trader::ForeignInstitutionTrader;
 
 const INIT_GOLD_PRICE: f64 = 10.0;
 const INIT_R_PRICE: f64 = 10.0;
 const INIT_GOLD_REVERSE: u64 = 10;
 const INIT_R_REVERSE: u64 = 10;
 
-fn main() {
+const GM_RB_DS_API_KEY: &str = "sk-b9c7388a03c34f7c9c90fb84dfb1bc5b";
+const GM_FIT_DS_API_KEY: &str = "sk-677aa1f7a1794058aabd85f2749cd53c";
+
+#[tokio::main]
+async fn main() {
     let api_key = "sk-b9c7388a03c34f7c9c90fb84dfb1bc5b".to_string();
     let client = match DeepSeekClientBuilder::new(api_key).build() {
         Err(e) => {
@@ -32,10 +39,15 @@ fn main() {
     let mut init_reverse = HashMap::new();
     init_price.insert("gold_price", INIT_GOLD_PRICE);
     init_price.insert("R_price", INIT_R_PRICE);
-    init_reverse.insert("gold_reverse", INIT_GOLD_REVERSE);
-    init_reverse.insert("currency_R_reserves", INIT_R_REVERSE);
+    init_reverse.insert("gold_reserve", INIT_GOLD_REVERSE);
+    init_reverse.insert("currency_R_reserve", INIT_R_REVERSE);
 
-    let market = Market::new(init_price, init_reverse, client);
+    let mut market = Market::new(init_price, init_reverse, GM_RB_DS_API_KEY, GM_FIT_DS_API_KEY, 5);
+    match market.bid().await {
+        Ok(_) => (),
+        Err(e) => println!("{}", e)
+    };
+    market.daysEndUpdate();
 }
 
 #[test]
@@ -102,17 +114,16 @@ fn test_mining_department_reduce() {
 //         r#"{
 //         "type": "object",
 //         "properties": {
-//             "location": {
-//                 "type": "string",
-//                 "description": "The location to get the weather for"
+//             "price": {
+//                 "type": "float",
+//                 "description": "The current gold price"
 //             },
-//             "unit": {
-//                 "type": "string",
-//                 "enum": ["celsius", "fahrenheit"],
-//                 "description": "The unit of temperature"
+//             "meanline_5day_gold_price": {
+//                 "type": "float",
+//                 "description": "The 5 day meanline gold price"
 //             }
 //         },
-//         "required": ["location"]
+//         "required": ["price"]
 //         }"#
 //     ) {
 //         Err(e) => {
@@ -124,14 +135,14 @@ fn test_mining_department_reduce() {
 //     let tool_object = ToolObject {
 //         tool_type: ToolType::Function,
 //         function: Function {
-//             description: "Get weather of an location, the user shoud supply a location first".to_string(),
-//             name: "get_waether".to_string(),
+//             description: "Provide gold investment advice.".to_string(),
+//             name: "gold_investment_advice".to_string(),
 //             parameters
 //         }
 //     };
 
 //     let tool_objects = vec![tool_object];
-//     let mut messages = vec![MessageRequest::user("How's the weather in Hangzhou?")];
+//     let mut messages = vec![MessageRequest::user("Now gold price is 1800.5 USD per ounce. Provide me some investment advice about gold.")];
 //     let resp = match CompletionsRequestBuilder::new(&messages)
 //         .tools(&tool_objects)
 //         .do_request(&client)
@@ -156,7 +167,7 @@ fn test_mining_department_reduce() {
 //         }
 //     }
 
-//     messages.push(MessageRequest::Tool(ToolMessageRequest::new("24°C", &id)));
+//     messages.push(MessageRequest::Tool(ToolMessageRequest::new("1795.3", &id)));
 //     let resp = match CompletionsRequestBuilder::new(&messages)
 //         .tools(&tool_objects)
 //         .do_request(&client)
