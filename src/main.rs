@@ -4,17 +4,11 @@ mod GoldSupplyDepartment;
 mod Trader;
 mod TransactionBehavior;
 
-use anyhow::Result;
-use deepseek_api::response::FinishReason;
-use schemars::schema::SchemaObject;
-use std::{collections::HashMap, str::FromStr};
-use deepseek_api::request::{Function, ToolMessageRequest, ToolObject, ToolType, MessageRequest};
-use deepseek_api::{DeepSeekClientBuilder, CompletionsRequestBuilder, RequestBuilder};
-
 use GoldMarket::Market;
 use GoldProductionDepartment::MiningDepartment;
-use GoldSupplyDepartment::RoyalBank;
-use Trader::ForeignInstitutionTrader;
+
+use std::collections::HashMap;
+use deepseek_api::DeepSeekClientBuilder;
 
 const INIT_GOLD_PRICE: f64 = 10.0;
 const INIT_R_PRICE: f64 = 10.0;

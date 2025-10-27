@@ -1,8 +1,5 @@
-use deepseek_api::CompletionsRequestBuilder;
-use deepseek_api::request::MessageRequest;
 use std::collections::HashMap;
 
-use crate::GoldMarket;
 use crate::GoldSupplyDepartment::RoyalBank;
 use crate::GoldProductionDepartment::MiningDepartment;
 use crate::Trader::ForeignInstitutionTrader;

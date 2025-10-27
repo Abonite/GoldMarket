@@ -1,6 +1,5 @@
 use std::result::Result;
 use rand_distr::{Poisson, Distribution};
-use rand::Rng;
 
 pub struct MiningDepartment {
     // percent
